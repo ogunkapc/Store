@@ -115,7 +115,7 @@ public class UserController {
     )
     @PutMapping("/{userId}")
     public ResponseEntity<UserDto> updateUser(
-            @PathVariable(name = "id") Long id,
+            @PathVariable(name = "userId") Long id,
             @RequestBody UpdateUserRequest request
     ) {
         var user = userRepository.findById(id).orElse(null);
