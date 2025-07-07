@@ -76,7 +76,17 @@ public class UserController {
         return ResponseEntity.ok(userMapper.toDto(user));
     }
 
-    @PostMapping
+    //! Create a new user
+    @Operation(summary = "Create a new user", description = "Creates a new user in the system.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "201", description = "User created successfully",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
+                    )
+            }
+    )
+    @PostMapping("/create")
     public ResponseEntity<UserDto> createUser(
             @RequestBody RegisterUserRequest request,
             UriComponentsBuilder uriBuilder
@@ -90,7 +100,20 @@ public class UserController {
         return ResponseEntity.created(uri).body(userDto );
     }
 
-    @PutMapping("/{id}")
+    //! Update an existing user
+    @Operation(summary = "Update an existing user", description = "Updates the details of an existing user by ID.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200", description = "User updated successfully",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404", description = "User not found"
+                    )
+            }
+    )
+    @PutMapping("/{userId}")
     public ResponseEntity<UserDto> updateUser(
             @PathVariable(name = "id") Long id,
             @RequestBody UpdateUserRequest request
@@ -105,6 +128,18 @@ public class UserController {
         return ResponseEntity.ok(userMapper.toDto(user));
     }
 
+    //! Delete a user
+    @Operation(summary = "Delete a user", description = "Deletes a user by their ID.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "204", description = "User deleted successfully"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404", description = "User not found"
+                    )
+            }
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         var user = userRepository.findById(id).orElse(null);
@@ -115,6 +150,21 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    //! Change user password
+    @Operation(summary = "Change user password", description = "Changes the password of a user by their ID.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "204", description = "Password changed successfully"
+                    ),
+                    @ApiResponse(
+                            responseCode = "404", description = "User not found"
+                    ),
+                    @ApiResponse(
+                            responseCode = "401", description = "Unauthorized - old password does not match"
+                    )
+            }
+    )
     @PostMapping("/{id}/change-password")
     public ResponseEntity<Void> changePassword(
             @PathVariable Long id,
