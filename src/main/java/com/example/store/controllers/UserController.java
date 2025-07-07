@@ -6,6 +6,12 @@ import com.example.store.dtos.UpdateUserRequest;
 import com.example.store.dtos.UserDto;
 import com.example.store.mappers.UserMapper;
 import com.example.store.repositories.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -19,10 +25,21 @@ import java.util.Set;
 @CrossOrigin
 @AllArgsConstructor
 @RequestMapping("/api/users")
+@Tag(name = "Users")
 public class UserController {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+    //! Get all users
+    @Operation(summary = "Get all users", description = "Returns a list of all users in the system, sorted by the specified field.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200", description = "Successfully retrieved the list of users",
+                            content = @Content(mediaType = "application/json", schema =@Schema(implementation = UserDto.class))
+                    )
+            }
+    )
     @GetMapping
     public Iterable<UserDto> getAllUsers(
             @RequestParam(required = false, defaultValue = "", name = "sort") String sortBy
@@ -36,9 +53,22 @@ public class UserController {
                 .toList();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
-        var user = userRepository.findById(id).orElse(null);
+    //! Get user by ID
+    @Operation(summary = "Get user by ID", description = "Returns a user by their ID.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200", description = "Successfully retrieved the user",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404", description = "User not found"
+                    )
+            }
+    )
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDto> getUser(@PathVariable Long userId) {
+        var user = userRepository.findById(userId).orElse(null);
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
