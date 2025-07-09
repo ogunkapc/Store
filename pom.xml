@@ -64,25 +64,9 @@
 		</dependency>
 
 		<dependency>
-			<artifactId>flyway-core</artifactId>
-			<groupId>org.flywaydb</groupId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-sqlserver</artifactId>
-		</dependency>
-
-		<dependency>
 			<artifactId>lombok</artifactId>
 			<groupId>org.projectlombok</groupId>
-<!--			<scope>provided</scope>-->
 			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 
 		<dependency>
@@ -138,18 +122,6 @@
 					</excludes>
 				</configuration>
 			</plugin>
-
-			<plugin>
-				<groupId>org.flywaydb</groupId>
-				<artifactId>flyway-maven-plugin</artifactId>
-				<configuration>
-					<url>jdbc:sqlserver://localhost:1433;databaseName=store_api;encrypt=true;trustServerCertificate=true</url>
-					<user>root</user>
-					<password>password</password>
-					<cleanDisabled>false</cleanDisabled>
-				</configuration>
-			</plugin>
-
 		</plugins>
 	</build>
 
